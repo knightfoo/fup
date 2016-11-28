@@ -2,7 +2,7 @@
 
 version=$1
 pool=tank0
-ftp_url="ftp://ftp.icm.edu.pl/pub/FreeBSD/releases/amd64/10.3-RELEASE"
+ftp_url="ftp://ftp.icm.edu.pl/pub/FreeBSD/releases/amd64/${version}-RELEASE"
 
 cur_ver=$(uname -r | awk -F '-' '{print $1}')
 cur_bootfs=$(zpool get all ${pool} | grep bootfs | awk '{print $3}')
@@ -18,9 +18,8 @@ fi
 ver=$(echo $version | tr -d '.')
 
 echo "Czy dataset istnieje?"
-zfs list -H ${pool}/ROOT/base${ver}
-
-if [ $? -eq 1 ];
+if ! zfs list -H ${pool}/ROOT/base${ver} 1> /dev/null 2> /dev/null;
+#if [ $? -eq 1 ];
 then
 	echo "Nie istnieje tworze"
 	#zfs create -o mountpoint=/storage/ROOT/base${ver} ${pool}/ROOT/base${ver}
