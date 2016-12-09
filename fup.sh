@@ -10,14 +10,14 @@ cur_bootfs=$(zpool get all ${pool} | grep bootfs | awk '{print $3}')
 
 if [ -z "$*" ]; 
 then 
-	echo "Jaka wersja?" 
+	echo "Which FreeBSD version?" 
 	exit
 fi
 
 # wycinam kropke z wersji, zeby dataset stworzyc odpowiedni
 ver=$(echo $version | tr -d '.')
 
-echo "Czy dataset istnieje?"
+echo "Is dataset exists?"
 if ! zfs list -H ${pool}/ROOT/base${ver} 1> /dev/null 2> /dev/null;
 #if [ $? -eq 1 ];
 then
