@@ -21,7 +21,7 @@ echo "Does dataset exists?"
 if ! zfs list -H ${pool}/ROOT/base${ver} 1> /dev/null 2> /dev/null;
 #if [ $? -eq 1 ];
 then
-	echo "I create dataset"
+	echo "Creating dataset"
 	#zfs create -o mountpoint=/storage/ROOT/base${ver} ${pool}/ROOT/base${ver}
 	zfs create -o canmount=noauto -o mountpoint=/ ${pool}/ROOT/base${ver}
 	mount -t zfs ${pool}/ROOT/base${ver} /mnt
