@@ -14,15 +14,16 @@ then
 	exit
 fi
 
-ver=$(echo $version | sed 's#\.#_#')
+#ver=$(echo $version | sed 's#\.#_#')
+ver=$version
 
 echo "Does dataset exists?"
-if ! zfs list -H ${pool}/ROOT/basefs${ver} 1> /dev/null 2> /dev/null;
+if ! zfs list -H ${pool}/ROOT/base${ver} 1> /dev/null 2> /dev/null;
 #if [ $? -eq 1 ];
 then
 	echo "Creating dataset"
-	zfs create -o canmount=noauto -o mountpoint=/ ${pool}/ROOT/basefs${ver}
-	mount -t zfs ${pool}/ROOT/basefs${ver} /mnt
+	zfs create -o canmount=noauto -o mountpoint=/ ${pool}/ROOT/base${ver}
+	mount -t zfs ${pool}/ROOT/base${ver} /mnt
 else
 	echo "Dataset exists, check ..."
 	exit
@@ -50,7 +51,7 @@ cp -r /root/* /mnt/root/
 cp -r /home/* /mnt/home/*
 
 
-zpool set bootfs=${pool}/ROOT/basefs${ver} ${pool}
+zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
 umount /mnt
 
 zfs set canmount=noauto ${cur_bootfs} ${pool}
