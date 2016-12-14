@@ -14,17 +14,15 @@ then
 	exit
 fi
 
-# wycinam kropke z wersji, zeby dataset stworzyc odpowiedni
-ver=$(echo $version | tr -d '.')
+ver=$(echo $version | sed 's#\.#_#')
 
 echo "Does dataset exists?"
-if ! zfs list -H ${pool}/ROOT/base${ver} 1> /dev/null 2> /dev/null;
+if ! zfs list -H ${pool}/ROOT/basefs${ver} 1> /dev/null 2> /dev/null;
 #if [ $? -eq 1 ];
 then
 	echo "Creating dataset"
-	#zfs create -o mountpoint=/storage/ROOT/base${ver} ${pool}/ROOT/base${ver}
-	zfs create -o canmount=noauto -o mountpoint=/ ${pool}/ROOT/base${ver}
-	mount -t zfs ${pool}/ROOT/base${ver} /mnt
+	zfs create -o canmount=noauto -o mountpoint=/ ${pool}/ROOT/basefs${ver}
+	mount -t zfs ${pool}/ROOT/basefs${ver} /mnt
 else
 	echo "Dataset exists, check ..."
 	exit
@@ -34,7 +32,6 @@ echo "Fetching and extracting FreeBSD packages"
 for pkg in base.txz kernel.txz;
 do
 	echo $pkg
-	#fetch -o - ${ftp_url}/${pkg} | tar xpf - -C /storage/ROOT/base${ver} 
 	fetch -o - ${ftp_url}/${pkg} | tar xpf - -C /mnt 
 
 done	
@@ -42,7 +39,6 @@ done
 echo "Copying files"
 for plik in /etc/rc.conf /etc/rc.conf.local /etc/rc.conf.d/* /boot/loader.conf /etc/passwd /etc/group /etc/master.passwd /etc/sysctl.conf /etc/login.conf /etc/fstab /etc/ssh/sshd_config;
 do
-	#cp ${plik} /storage/ROOT/base${ver}${plik}
 	cp ${plik} /mnt${plik}
 
 done	
@@ -54,7 +50,7 @@ cp -r /root/* /mnt/root/
 cp -r /home/* /mnt/home/*
 
 
-zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
+zpool set bootfs=${pool}/ROOT/basefs${ver} ${pool}
 umount /mnt
 
 zfs set canmount=noauto ${cur_bootfs} ${pool}
