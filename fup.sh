@@ -46,9 +46,9 @@ done
 
 chroot /mnt pwd_mkdb /etc/master.passwd	
 
-cp -r /dev/* /mnt/dev/
+#cp -r /dev/* /mnt/dev/
 cp -r /root/* /mnt/root/
-cp -r /home/* /mnt/home/*
+#cp -r /home/* /mnt/home/*
 
 
 zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
