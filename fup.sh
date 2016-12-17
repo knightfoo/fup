@@ -51,7 +51,7 @@ chroot /mnt pwd_mkdb /etc/master.passwd
 
 cp -r /dev/* /mnt/dev/
 cp -r /root/* /mnt/root/
-cp -r /home/* /mnt/home/*
+#cp -r /usr/home/* /mnt/usr/home/*
 
 
 zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
@@ -59,4 +59,9 @@ umount /mnt
 
 zfs set canmount=noauto ${cur_bootfs} ${pool}
 
+# gdy home jest na datasecie
+# zfs create tank0/home && zfs set mountpoint /usr/home tank0/home && ln -s /usr/home /home
+
+# bootcode 
+# gpart bootcode -b /mnt/boot/pmbr -p /mnt/boot/gptzfsboot -i 1 ${DYSK}1
 
