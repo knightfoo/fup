@@ -5,53 +5,54 @@ pool=tank0
 ftp_url="ftp://ftp.icm.edu.pl/pub/FreeBSD/releases/amd64/${version}-RELEASE"
 
 cur_ver=$(uname -r | awk -F '-' '{print $1}')
-cur_bootfs=$(zpool get all ${pool} | grep bootfs | awk '{print $3}')
+cur_bootfs=$(zpool get -H bootfs ${pool} |  awk '{print $3}')
 
 
 if [ -z "$*" ]; 
 then 
-	echo "Jaka wersja?" 
+	echo "Which FreeBSD version?" 
 	exit
 fi
 
-# wycinam kropke z wersji, zeby dataset stworzyc odpowiedni
-ver=$(echo $version | tr -d '.')
+#ver=$(echo $version | sed 's#\.#_#')
+ver=$version
 
-echo "Czy dataset istnieje?"
+echo "Does dataset exists?"
 if ! zfs list -H ${pool}/ROOT/base${ver} 1> /dev/null 2> /dev/null;
 #if [ $? -eq 1 ];
 then
-	echo "Nie istnieje tworze"
-	#zfs create -o mountpoint=/storage/ROOT/base${ver} ${pool}/ROOT/base${ver}
+	echo "Creating dataset"
 	zfs create -o canmount=noauto -o mountpoint=/ ${pool}/ROOT/base${ver}
 	mount -t zfs ${pool}/ROOT/base${ver} /mnt
 else
-	echo "Istnieje sprawdz to"
+	echo "Dataset exists, check ..."
 	exit
 fi	
 
-echo "Pobieram co potrzebne"
+echo "Fetching and extracting FreeBSD packages"
 for pkg in base.txz kernel.txz;
 do
 	echo $pkg
-	#fetch -o - ${ftp_url}/${pkg} | tar xpf - -C /storage/ROOT/base${ver} 
 	fetch -o - ${ftp_url}/${pkg} | tar xpf - -C /mnt 
 
 done	
 
-echo "Kopiuje wymagane pliki"
+echo "Copying files"
 for plik in /etc/rc.conf /etc/rc.conf.local /etc/rc.conf.d/* /boot/loader.conf /etc/passwd /etc/group /etc/master.passwd /etc/sysctl.conf /etc/login.conf /etc/fstab /etc/ssh/sshd_config;
 do
-	#cp ${plik} /storage/ROOT/base${ver}${plik}
 	cp ${plik} /mnt${plik}
 
 done	
 
 chroot /mnt pwd_mkdb /etc/master.passwd	
 
-cp -r /dev/* /mnt/dev/
+#cp -r /dev/* /mnt/dev/
 cp -r /root/* /mnt/root/
+<<<<<<< HEAD
 #cp -r /usr/home/* /mnt/usr/home/*
+=======
+#cp -r /home/* /mnt/home/*
+>>>>>>> 8d070ccc1395e85bc04dc680f33855472143e7a6
 
 
 zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
