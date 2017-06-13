@@ -50,7 +50,7 @@ chroot /mnt pwd_mkdb /etc/master.passwd
 cp -r /root/* /mnt/root/
 #cp -r /usr/home/* /mnt/usr/home/*
 
-if zfs list -H 
+#if zfs list -H 
 
 zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
 umount /mnt
