@@ -70,6 +70,6 @@ done
 # zfs create tank0/home && zfs set mountpoint /usr/home tank0/home && ln -s /usr/home /home
 
 
-umount /mnt
+#umount /mnt
 zfs set mountpoint=legacy ${cur_bootfs}
 zfs set canmount=noauto ${cur_bootfs} ${pool}
