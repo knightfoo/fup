@@ -48,11 +48,7 @@ chroot /mnt pwd_mkdb /etc/master.passwd
 
 #cp -r /dev/* /mnt/dev/
 cp -r /root/* /mnt/root/
-<<<<<<< HEAD
 #cp -r /usr/home/* /mnt/usr/home/*
-=======
-#cp -r /home/* /mnt/home/*
->>>>>>> 8d070ccc1395e85bc04dc680f33855472143e7a6
 
 
 zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
@@ -60,9 +56,19 @@ umount /mnt
 
 zfs set canmount=noauto ${cur_bootfs} ${pool}
 
+gpart show -p | awk '/freebsd-boot/{ print { };' | while read dysk;
+do
+    echo "Dysk $dysk"
+    d_=$(echo $dysk|sed 's/\(.*\)p./\1/')
+    i_=$(echo $dysk|sed 's/.*\(.\)$/\1/')
+    echo "$d_ - $i_"
+done
+            
+
 # gdy home jest na datasecie
 # zfs create tank0/home && zfs set mountpoint /usr/home tank0/home && ln -s /usr/home /home
 
 # bootcode 
 # gpart bootcode -b /mnt/boot/pmbr -p /mnt/boot/gptzfsboot -i 1 ${DYSK}1
+
 
