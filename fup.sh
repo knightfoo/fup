@@ -69,8 +69,7 @@ done
 # gdy home jest na datasecie
 # zfs create tank0/home && zfs set mountpoint /usr/home tank0/home && ln -s /usr/home /home
 
-# bootcode 
-# gpart bootcode -b /mnt/boot/pmbr -p /mnt/boot/gptzfsboot -i 1 ${DYSK}1
 
 umount /mnt
+zfs set mountpoint=legacy ${cur_bootfs}
 zfs set canmount=noauto ${cur_bootfs} ${pool}
