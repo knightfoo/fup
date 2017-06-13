@@ -53,9 +53,8 @@ cp -r /root/* /mnt/root/
 #if zfs list -H 
 
 zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
-umount /mnt
+#umount /mnt
 
-zfs set canmount=noauto ${cur_bootfs} ${pool}
 
 gpart show -p | awk '/freebsd-boot/{ print $3 };' | while read dysk;
 do
@@ -73,4 +72,5 @@ done
 # bootcode 
 # gpart bootcode -b /mnt/boot/pmbr -p /mnt/boot/gptzfsboot -i 1 ${DYSK}1
 
-
+umount /mnt
+zfs set canmount=noauto ${cur_bootfs} ${pool}
