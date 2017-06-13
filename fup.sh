@@ -50,18 +50,20 @@ chroot /mnt pwd_mkdb /etc/master.passwd
 cp -r /root/* /mnt/root/
 #cp -r /usr/home/* /mnt/usr/home/*
 
+if zfs list -H 
 
 zpool set bootfs=${pool}/ROOT/base${ver} ${pool}
 umount /mnt
 
 zfs set canmount=noauto ${cur_bootfs} ${pool}
 
-gpart show -p | awk '/freebsd-boot/{ print { };' | while read dysk;
+gpart show -p | awk '/freebsd-boot/{ print $3 };' | while read dysk;
 do
     echo "Dysk $dysk"
     d_=$(echo $dysk|sed 's/\(.*\)p./\1/')
     i_=$(echo $dysk|sed 's/.*\(.\)$/\1/')
     echo "$d_ - $i_"
+    gpart bootcode -b /mnt/boot/pmbr -p /mnt/boot/gptzfsboot -i ${i_} ${d_}
 done
             
 
