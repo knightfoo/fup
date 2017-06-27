@@ -67,7 +67,7 @@ done
             
 
 # gdy home jest na datasecie
-if zfs list -H ${pool}/home 1> /dev/null 2> /dev/null;
+if [ zfs list -H ${pool}/home 1> /dev/null 2> /dev/null ] -or [ zfs list -H ${pool}/usr/home > /dev/null 2>&1 ];
 then
     echo "dataset home exists"
     zfs set mountpoint=/usr/home ${pool}/home
