@@ -67,6 +67,13 @@ done
             
 
 # gdy home jest na datasecie
+if zfs list -H ${pool}/home 1> /dev/null 2> /dev/null;
+then
+    echo "dataset home exists"
+    zfs set mountpoint=/usr/home ${pool}/home
+    chroot /mnt ln -s /usr/home /home
+fi    
+
 # zfs create tank0/home && zfs set mountpoint /usr/home tank0/home && ln -s /usr/home /home
 
 
