@@ -42,7 +42,13 @@ for plik in /etc/rc.conf /etc/rc.conf.local /etc/rc.conf.d/* /boot/loader.conf /
 do
 	cp ${plik} /mnt${plik}
 
-done	
+done
+
+if grep 'vfs.root.mountfrom' /mnt/boot/loader.conf > /dev/null 2>&1;
+then
+        sed -i.bck 's#vfs.root.mountfrom#\#vfs.root.mountfrom#g' /mnt/boot/loader.conf
+fi
+
 
 chroot /mnt pwd_mkdb /etc/master.passwd	
 
