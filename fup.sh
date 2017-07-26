@@ -54,6 +54,7 @@ chroot /mnt pwd_mkdb /etc/master.passwd
 
 #cp -r /dev/* /mnt/dev/
 cp -r /root/* /mnt/root/
+cp -r /root/.[a-z]* /mnt/root/
 #cp -r /usr/home/* /mnt/usr/home/*
 
 #if zfs list -H 
@@ -84,5 +85,8 @@ fi
 
 
 #umount /mnt
-zfs set mountpoint=legacy ${cur_bootfs}
-zfs set canmount=noauto ${cur_bootfs} ${pool}
+if [ ${cur_bootfs} ];
+then
+    zfs set mountpoint=legacy ${cur_bootfs}
+    zfs set canmount=noauto ${cur_bootfs} ${pool}
+fi    
