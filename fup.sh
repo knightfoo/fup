@@ -51,6 +51,8 @@ fi
 
 
 chroot /mnt pwd_mkdb /etc/master.passwd	
+chroot /mnt cap_mkdb /etc/login.conf
+
 
 #cp -r /dev/* /mnt/dev/
 cp -r /root/* /mnt/root/
