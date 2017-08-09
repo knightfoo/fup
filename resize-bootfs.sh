@@ -33,10 +33,14 @@ swap() {
 	do
 		if echo $swap_dev | grep '/mirror/' 1> /dev/null 2> /dev/null;
 		then
-			echo mirror
+			echo "Mirror !!!"
+			if swapoff -a > /dev/null 2>&1;
+			then
+				echo "Swap sie nie wylaczyl"
+			else
+				echo "blep"	
+			fi
 		fi
-		
-
 	done
 }
 
