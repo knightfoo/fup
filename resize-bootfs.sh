@@ -37,6 +37,7 @@ swap() {
 			if ! swapoff -a 1> /dev/null 2> /dev/null;
 			then
 				echo "Swap sie nie wylaczyl"
+				exit 
 			else
 				echo "blep"	
 			fi
