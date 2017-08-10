@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh 
 
 
 freebsd-boot() {
@@ -27,22 +27,38 @@ freebsd-swap() {
 	done
 }	
 
+destroy-gmirror() {
+
+
+}
+
 swap() {
 
-	swapctl -l | grep dev | awk '{print $1}'| while read swap_dev;
-	do
-		if echo $swap_dev | grep '/mirror/' 1> /dev/null 2> /dev/null;
-		then
-			echo "Mirror !!!"
-			if ! swapoff -a 1> /dev/null 2> /dev/null;
+	if swapinfo | grep dev > /dev/null 2>&1;
+	then	
+		swapctl -l | grep dev | awk '{print $1}'| while read swap_dev;
+		do
+			if echo $swap_dev | grep '/mirror/' 1> /dev/null 2> /dev/null;
 			then
-				echo "Swap sie nie wylaczyl"
-				exit 
+				echo "Mirror !!!"
+				if ! swapoff -a 1> /dev/null 2> /dev/null;
+				then
+					echo "Swap sie nie wylaczyl"
+					exit 
+				else
+					echo "Swap wylaczony. Przerabiamy ...."	
+					echo $swap_dev
+					destroy-gmirror	
+					#freebsd-swap
+				fi
 			else
-				echo "blep"	
+				echo "Swapu brak"	
 			fi
-		fi
-	done
+		done
+	else
+		echo "Swapu brak"
+		swapon -a	
+	fi	
 }
 
 swap
