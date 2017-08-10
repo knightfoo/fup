@@ -34,14 +34,14 @@ destroy-gmirror() {
 
 swap() {
 
-	if swapinfo | grep dev > /dev/null 2>&1;
+	if swapinfo | grep -v 'Total|Device' > /dev/null 2>&1;
 	then	
 		swapctl -l | grep dev | awk '{print $1}'| while read swap_dev;
 		do
 			if echo $swap_dev | grep '/mirror/' 1> /dev/null 2> /dev/null;
 			then
 				echo "Mirror !!!"
-				if ! swapoff -a 1> /dev/null 2> /dev/null;
+				if ! swapoff $swap_dev 1> /dev/null 2> /dev/null;
 				then
 					echo "Swap sie nie wylaczyl"
 					exit 
