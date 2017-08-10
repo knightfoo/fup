@@ -1,4 +1,4 @@
-#!/bin/sh -x 
+#!/bin/sh  
 
 
 freebsd-boot() {
@@ -28,7 +28,22 @@ freebsd-swap() {
 }	
 
 destroy-gmirror() {
-	echo "Przerabiamy $1"
+	echo "Rozpinam gmirror na $1"
+	d=$(echo $1|awk -F '/' '{print $4}')
+	echo "gmirror destroy $d"
+	if gmirror destroy $d > /dev/null 2>&1;
+	then
+		return 0
+	else 
+		return 1	
+	fi	
+
+}
+
+
+create-gmirror() {
+	gmirror label -h swap0 /dev/da0p2 /dev/da1p2
+	gmirror label -h swap1 /dev/da2p2 /dev/da3p2
 
 }
 
@@ -40,15 +55,14 @@ swap() {
 		do
 			if echo $swap_dev | grep '/mirror/' 1> /dev/null 2> /dev/null;
 			then
-				echo "Mirror !!!"
 				if ! swapoff $swap_dev 1> /dev/null 2> /dev/null;
 				then
 					echo "Swap sie nie wylaczyl"
 					exit 
 				else
-					echo "Swap wylaczony. Przerabiamy ...."	
-					echo $swap_dev
+					echo "Swap - $swap_dev - wylaczony. Przerabiamy ...."	
 					destroy-gmirror	$swap_dev
+					echo $?
 					#freebsd-swap
 				fi
 			elif echo $swap_dev | grep '/dev/' > /dev/null 2>&1;
@@ -59,8 +73,11 @@ swap() {
 			fi
 		done
 	else
-		echo "Swapu brak"
-		swapon -a	
+		echo "Swapu brak wiec go tworze"
+		create-gmirror
+		swapon /dev/mirror/swap0
+		swapon /dev/mirror/swap1	
+		swapinfo
 	fi	
 }
 
