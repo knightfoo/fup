@@ -28,7 +28,7 @@ freebsd-swap() {
 }	
 
 destroy-gmirror() {
-
+	echo "Przerabiamy $1"
 
 }
 
@@ -48,11 +48,14 @@ swap() {
 				else
 					echo "Swap wylaczony. Przerabiamy ...."	
 					echo $swap_dev
-					destroy-gmirror	
+					destroy-gmirror	$swap_dev
 					#freebsd-swap
 				fi
+			elif echo $swap_dev | grep '/dev/' > /dev/null 2>&1;
+			then				
+				echo "Bez mirrora"				
 			else
-				echo "Swapu brak"	
+				echo "Mirrora brak"	
 			fi
 		done
 	else
