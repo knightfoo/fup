@@ -34,7 +34,7 @@ destroy-gmirror() {
 
 swap() {
 
-	if swapinfo | grep -v 'Total|Device' > /dev/null 2>&1;
+	if swapinfo | egrep -v 'Total|Device' > /dev/null 2>&1;
 	then	
 		swapctl -l | grep dev | awk '{print $1}'| while read swap_dev;
 		do
