@@ -11,7 +11,7 @@ freebsd-boot() {
 	done
 }	
 
-freebsd-swap() {
+change-bootfs-size() {
 	gpart show -p | awk '/freebsd-boot/{ print $3 };' | while read dysk;
 	do
 		d_=$(echo $dysk|sed 's/\(.*\)p./\1/')
@@ -22,6 +22,7 @@ freebsd-swap() {
 			if [ $s_i -eq 2 ];
 			then
 				echo "Dysk: $d_ --- bootfs: $b_i --- swap: $s_i"
+
 			fi				
 		done				
 	done
@@ -81,4 +82,5 @@ swap() {
 	fi	
 }
 
-swap
+#swap
+change-bootfs-size
