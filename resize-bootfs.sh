@@ -1,5 +1,6 @@
 #!/bin/sh  
 
+sysctl kern.geom.debugflags=16
 
 freebsd-boot() {
 	gpart show -p | awk '/freebsd-boot/{ print $3 };' | while read dysk;
@@ -22,6 +23,10 @@ change-bootfs-size() {
 			if [ $s_i -eq 2 ];
 			then
 				echo "Dysk: $d_ --- bootfs: $b_i --- swap: $s_i"
+				gpart delete -i $s_i $d_
+				gpart resize -i $b_i -s 512K $d_
+				gpart add -t freebsd-swap $d_
+				gpart bootcode -p /boot/gptzfsboot -b /boot/pmbr -i $b_i $d_
 
 			fi				
 		done				
@@ -42,9 +47,17 @@ destroy-gmirror() {
 }
 
 
-create-gmirror() {
-	gmirror label -h swap0 /dev/da0p2 /dev/da1p2
-	gmirror label -h swap1 /dev/da2p2 /dev/da3p2
+create-gmirror-swap() {
+	ile=0
+	s_l=$(gpart show -p | grep 'freebsd-swap' | wc -l)
+	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
+	do 
+		
+		echo $disk
+
+#		gmirror label -h swap0 /dev/da0p2 /dev/da1p2
+#		gmirror label -h swap1 /dev/da2p2 /dev/da3p2
+	done		
 
 }
 
@@ -83,4 +96,8 @@ swap() {
 }
 
 #swap
-change-bootfs-size
+#change-bootfs-size
+create-gmirror-swap
+
+
+sysctl kern.geom.debugflags=0
