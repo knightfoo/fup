@@ -54,7 +54,7 @@ swap() {
 	then	
 		swapctl -l | grep dev | awk '{print $1}'| while read swap_dev;
 		do
-			if echo $swap_dev | grep '/mirror/' 1> /dev/null 2> /dev/null;
+			if echo $swap_dev | egrep '/mirror/|/label/' 1> /dev/null 2> /dev/null;
 			then
 				if ! swapoff $swap_dev 1> /dev/null 2> /dev/null;
 				then
