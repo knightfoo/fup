@@ -1,6 +1,6 @@
-#!/bin/sh  
+#!/bin/sh   
 
-sysctl kern.geom.debugflags=16
+#sysctl kern.geom.debugflags=16
 
 freebsd-boot() {
 	gpart show -p | awk '/freebsd-boot/{ print $3 };' | while read dysk;
@@ -49,12 +49,35 @@ destroy-gmirror() {
 
 create-gmirror-swap() {
 	ile=0
-	s_l=$(gpart show -p | grep 'freebsd-swap' | wc -l)
-	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
-	do 
-		
-		echo $disk
+	swap_count=$(gpart show -p | grep 'freebsd-swap' | wc -l)
+	spans=$((${swap_count}/2))
+	span=0
+	#while [ "${span}" -lt "${spans}" ]
+	#do
+	#	if [ ${span} -eq 0 ]
+	#	then
+	#		`echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
+	#	else
+	#		`echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
+        #	fi
+	 #       span=$((${span}+1))
+	#done
 
+
+	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
+	do
+		if [ $ile -lt $spans ];
+		then
+			echo "$disk - ILE: $ile - $spans"
+			#ile=$((${ile}+1))
+
+		else
+			#ile=1	
+			echo "TU $disk - ILE: $ile - $spans"
+			
+		fi
+
+	 	ile=$((${ile}+1)) 	
 #		gmirror label -h swap0 /dev/da0p2 /dev/da1p2
 #		gmirror label -h swap1 /dev/da2p2 /dev/da3p2
 	done		
