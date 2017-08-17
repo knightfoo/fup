@@ -5,7 +5,7 @@
 freebsd-boot() {
 	gpart show -p | awk '/freebsd-boot/{ print $3 };' | while read dysk;
 	do
-		echo "Dysk $dysk"
+		echo "Disk $dysk"
 		d_=$(echo $dysk|sed 's/\(.*\)p./\1/')
 		i_=$(echo $dysk|sed 's/.*\(.\)$/\1/')
 		echo "$d_ - $i_"
@@ -22,7 +22,7 @@ change-bootfs-size() {
 			s_i=$(echo $s_dysk|sed 's/.*\(.\)$/\1/')
 			if [ $s_i -eq 2 ];
 			then
-				echo "Dysk: $d_ --- bootfs: $b_i --- swap: $s_i"
+				echo "Disk: $d_ --- bootfs: $b_i --- swap: $s_i"
 				gpart delete -i $s_i $d_
 				gpart resize -i $b_i -s 512K $d_
 				gpart add -t freebsd-swap $d_
@@ -34,7 +34,7 @@ change-bootfs-size() {
 }	
 
 destroy-gmirror() {
-	echo "Rozpinam gmirror na $1"
+	echo "Destroing gmirror on $1"
 	d=$(echo $1|awk -F '/' '{print $4}')
 	echo "gmirror destroy $d"
 	if gmirror destroy $d > /dev/null 2>&1;
@@ -67,7 +67,7 @@ create-gmirror-swap() {
 			dyski="$dyski /dev/$dysk"
 		fi
 		
-		[ ${ile} -eq 2 ] && (echo "Tworze: gmirror label -v -b round-robin -h swap${span} $dyski"; gmirror label -v -b round-robin -h swap${span} $dyski; swapon /dev/mirror/swap${span} )
+		[ ${ile} -eq 2 ] && (echo "Creating: gmirror label -v -b round-robin -h swap${span} $dyski"; gmirror label -v -b round-robin -h swap${span} $dyski; swapon /dev/mirror/swap${span} )
 	done		
 
 }
@@ -82,10 +82,10 @@ swap() {
 			then
 				if ! swapoff $swap_dev 1> /dev/null 2> /dev/null;
 				then
-					echo "Swap sie nie wylaczyl"
+					echo "The Swap did not turn on"
 					exit 
 				else
-					echo "Swap - $swap_dev - wylaczony. Przerabiamy ...."	
+					echo "Swap - $swap_dev - disabled."	
 					destroy-gmirror	$swap_dev
 					echo $?
 					#freebsd-swap
@@ -98,7 +98,7 @@ swap() {
 			fi
 		done
 	else
-		echo "Swapu brak wiec go tworze"
+		echo "There is no swap, let's create it"
 		create-gmirror-swap
 		#swapon /dev/mirror/swap0
 		#swapon /dev/mirror/swap1	
