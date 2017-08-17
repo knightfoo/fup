@@ -63,6 +63,7 @@ create-gmirror-swap() {
 		fi
 
 		echo "SWAP - ${span} - disk - $disk - ILE: $ile - $spans"
+		echo "gmirror label -h swap${span} /dev/
 	 	#ile=$((${ile}+1)) 	
 #		gmirror label -h swap0 /dev/da0p2 /dev/da1p2
 #		gmirror label -h swap1 /dev/da2p2 /dev/da3p2
