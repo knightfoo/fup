@@ -52,21 +52,22 @@ create-gmirror-swap() {
 	spans=$((${swap_count}/2))
 	span=0
 	dyski=""
-	
+	gmirror load
+
 	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read dysk;
 	do
 		if [ $ile -lt 2 ];
 		then
 			ile=$((${ile}+1))
-			dyski="$dyski $dysk"
+			dyski="$dyski /dev/$dysk"
 		else
 			span=$((${span}+1))
 			ile=1
 			dyski=""
-			dyski="$dyski $dysk"
+			dyski="$dyski /dev/$dysk"
 		fi
-
-		[ ${ile} -eq 2 ] && echo "gmirror label -h swap${span} $dyski"
+		
+		[ ${ile} -eq 2 ] && (echo "Tworze: gmirror label -v -b round-robin -h swap${span} $dyski"; gmirror label -v -b round-robin -h swap${span} $dyski; swapon /dev/mirror/swap${span} )
 	done		
 
 }
@@ -98,16 +99,16 @@ swap() {
 		done
 	else
 		echo "Swapu brak wiec go tworze"
-		create-gmirror
-		swapon /dev/mirror/swap0
-		swapon /dev/mirror/swap1	
+		create-gmirror-swap
+		#swapon /dev/mirror/swap0
+		#swapon /dev/mirror/swap1	
 		swapinfo
 	fi	
 }
 
 # Wylaczam swap
-#swap
-#change-bootfs-size
+swap
+change-bootfs-size
 create-gmirror-swap
 
 
