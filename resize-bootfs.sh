@@ -1,4 +1,4 @@
-#!/bin/sh   
+#!/bin/sh
 
 #sysctl kern.geom.debugflags=16
 
@@ -46,41 +46,51 @@ destroy-gmirror() {
 
 }
 
-
 create-gmirror-swap() {
 	ile=0
 	swap_count=$(gpart show -p | grep 'freebsd-swap' | wc -l)
 	spans=$((${swap_count}/2))
 	span=0
-	#while [ "${span}" -lt "${spans}" ]
-	#do
-	#	if [ ${span} -eq 0 ]
-	#	then
-	#		`echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
-	#	else
-	#		`echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
-        #	fi
-	 #       span=$((${span}+1))
-	#done
-
-
+	
 	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
 	do
-		if [ $ile -lt $spans ];
+		if [ $ile -lt 2 ];
 		then
-			echo "$disk - ILE: $ile - $spans"
-			#ile=$((${ile}+1))
-
+			ile=$((${ile}+1))
 		else
-			#ile=1	
-			echo "TU $disk - ILE: $ile - $spans"
-			
+			span=$((${span}+1))
+			ile=1
 		fi
 
-	 	ile=$((${ile}+1)) 	
+		echo "SWAP - ${span} - disk - $disk - ILE: $ile - $spans"
+	 	#ile=$((${ile}+1)) 	
 #		gmirror label -h swap0 /dev/da0p2 /dev/da1p2
 #		gmirror label -h swap1 /dev/da2p2 /dev/da3p2
 	done		
+
+}
+
+
+create-gmirror-swap-1() {
+	ile=0
+	swap_count=$(gpart show -p | grep 'freebsd-swap' | wc -l)
+	spans=$((${swap_count}/2))
+	span=0
+	while [ "${span}" -lt "${spans}" ]
+	do
+		if [ ${span} -eq 0 ]
+		then
+			echo `echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
+		else
+			`echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
+        	fi
+	        span=$((${span}+1))
+	done
+
+
+#	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
+#		gmirror label -h swap0 /dev/da0p2 /dev/da1p2
+#		gmirror label -h swap1 /dev/da2p2 /dev/da3p2
 
 }
 
