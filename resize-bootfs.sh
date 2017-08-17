@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh 
 
 #sysctl kern.geom.debugflags=16
 
@@ -51,47 +51,23 @@ create-gmirror-swap() {
 	swap_count=$(gpart show -p | grep 'freebsd-swap' | wc -l)
 	spans=$((${swap_count}/2))
 	span=0
+	dyski=""
 	
 	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
 	do
 		if [ $ile -lt 2 ];
 		then
 			ile=$((${ile}+1))
+			dyski="$dyski $disk"
 		else
 			span=$((${span}+1))
 			ile=1
+			dyski=""
+			dyski="$dyski $disk"
 		fi
 
-		echo "SWAP - ${span} - disk - $disk - ILE: $ile - $spans"
-		echo "gmirror label -h swap${span} /dev/
-	 	#ile=$((${ile}+1)) 	
-#		gmirror label -h swap0 /dev/da0p2 /dev/da1p2
-#		gmirror label -h swap1 /dev/da2p2 /dev/da3p2
+		[ ${ile} -eq 2 ] && echo "gmirror label -h swap${span} $dyski"
 	done		
-
-}
-
-
-create-gmirror-swap-1() {
-	ile=0
-	swap_count=$(gpart show -p | grep 'freebsd-swap' | wc -l)
-	spans=$((${swap_count}/2))
-	span=0
-	while [ "${span}" -lt "${spans}" ]
-	do
-		if [ ${span} -eq 0 ]
-		then
-			echo `echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
-		else
-			`echo | awk -v span=${span} -v zfsparts="${ZFSPARTS}" '{ split(zfsparts,arr," "); print arr[span+span+1] " " arr[span+span+2] }'`
-        	fi
-	        span=$((${span}+1))
-	done
-
-
-#	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
-#		gmirror label -h swap0 /dev/da0p2 /dev/da1p2
-#		gmirror label -h swap1 /dev/da2p2 /dev/da3p2
 
 }
 
@@ -129,6 +105,7 @@ swap() {
 	fi	
 }
 
+# Wylaczam swap
 #swap
 #change-bootfs-size
 create-gmirror-swap
