@@ -53,17 +53,17 @@ create-gmirror-swap() {
 	span=0
 	dyski=""
 	
-	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read disk;
+	gpart show -p | grep 'freebsd-swap' |awk '{print $3}' | while read dysk;
 	do
 		if [ $ile -lt 2 ];
 		then
 			ile=$((${ile}+1))
-			dyski="$dyski $disk"
+			dyski="$dyski $dysk"
 		else
 			span=$((${span}+1))
 			ile=1
 			dyski=""
-			dyski="$dyski $disk"
+			dyski="$dyski $dysk"
 		fi
 
 		[ ${ile} -eq 2 ] && echo "gmirror label -h swap${span} $dyski"
