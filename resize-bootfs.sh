@@ -109,6 +109,7 @@ swap() {
 # Wylaczam swap
 if [ "$1" == "swap" ];
 then
+	#
 	swap
 else	
 	swap
