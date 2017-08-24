@@ -107,9 +107,13 @@ swap() {
 }
 
 # Wylaczam swap
-#swap
-change-bootfs-size
-create-gmirror-swap
-
+if [ "$1" == "swap" ];
+then
+	swap
+else	
+	swap
+	change-bootfs-size
+	create-gmirror-swap
+fi	
 
 sysctl kern.geom.debugflags=0
