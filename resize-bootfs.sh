@@ -1,6 +1,6 @@
 #!/bin/sh 
 
-#sysctl kern.geom.debugflags=16
+sysctl kern.geom.debugflags=16
 
 freebsd-boot() {
 	gpart show -p | awk '/freebsd-boot/{ print $3 };' | while read dysk;
@@ -107,7 +107,7 @@ swap() {
 }
 
 # Wylaczam swap
-swap
+#swap
 change-bootfs-size
 create-gmirror-swap
 
